@@ -1,10 +1,27 @@
 export interface Stats {
-  STR: number;
-  AGL: number;
   INT: number;
-  CYW: number;
-  CHR: number;
-  TEC: number;
+  REF: number;
+  DEX: number;
+  TECH: number;
+  COOL: number;
+  WILL: number;
+  LUCK: number;
+  MOVE: number;
+  BODY: number;
+  EMP: number;
+}
+
+export interface DerivedStats {
+  hitPoints: number;
+  humanity: number;
+  seriouslyWounded: number;
+  deathSave: number;
+  initiative: number;
+}
+
+export interface RoleAbility {
+  name: string;
+  rank: number;
 }
 
 export interface Character {
@@ -15,22 +32,26 @@ export interface Character {
   backstory: string;
   affiliation: string;
   stats: Stats;
+  derivedStats: DerivedStats;
+  roleAbility: RoleAbility;
   avatarSeed: number;
 }
 
 export type RoleClass =
-  | 'Hacker'
-  | 'Street Samurai'
-  | 'Netrunner'
-  | 'Fixer'
-  | 'Rigger'
-  | 'Media'
   | 'Solo'
-  | 'Tech';
+  | 'Netrunner'
+  | 'Rockerboy'
+  | 'Tech'
+  | 'Medtech'
+  | 'Media'
+  | 'Exec'
+  | 'Lawman'
+  | 'Fixer';
 
 export interface StatDefinition {
   key: keyof Stats;
   label: string;
   fullName: string;
   color: string;
+  description: string;
 }

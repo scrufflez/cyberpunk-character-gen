@@ -83,8 +83,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex-shrink: 0;
+  width: 180px;
 }
 
 .roleTag {
@@ -101,18 +102,43 @@
 }
 
 .roleIcon {
-  font-size: 0.8rem;
-  color: #b300ff;
-  text-shadow: 0 0 8px #b300ff;
+  font-size: 0.85rem;
 }
 
 .roleName {
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 0.7rem;
-  color: #b300ff;
-  text-shadow: 0 0 8px rgba(179, 0, 255, 0.6);
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+/* Role Ability */
+.abilityTag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 5px 10px;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 3px;
+  background: rgba(0, 240, 255, 0.04);
+  width: 100%;
+}
+
+.abilityLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.5rem;
+  color: rgba(0, 240, 255, 0.45);
+  letter-spacing: 0.2em;
+}
+
+.abilityValue {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: #00f0ff;
+  text-shadow: 0 0 6px rgba(0, 240, 255, 0.5);
+  letter-spacing: 0.05em;
+  text-align: center;
 }
 
 .affiliationBadge {
@@ -148,7 +174,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -206,18 +232,12 @@
   background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
 }
 
-/* STATS */
-.statsBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.statsHeader {
+/* Section header */
+.sectionHeader {
   margin-bottom: 2px;
 }
 
-.statsLabel {
+.sectionLabel {
   font-family: 'Share Tech Mono', 'Courier New', monospace;
   font-size: 0.6rem;
   color: rgba(0, 240, 255, 0.45);
@@ -225,17 +245,63 @@
   text-transform: uppercase;
 }
 
-.statsList {
+/* STATS */
+.statsBlock {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 2px;
+}
+
+.statsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* DERIVED STATS */
+.derivedBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.derivedGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.derivedItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 3px;
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.derivedKey {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.5rem;
+  color: rgba(0, 240, 255, 0.45);
+  letter-spacing: 0.15em;
+}
+
+.derivedVal {
+  font-family: 'Rajdhani', 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #00f0ff;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
 }
 
 /* BACKSTORY */
 .backstoryBlock {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .backstory {
@@ -281,7 +347,7 @@
 }
 
 /* RESPONSIVE */
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .body {
     flex-direction: column;
     align-items: center;
@@ -295,5 +361,9 @@
 
   .name {
     font-size: 1.5rem;
+  }
+
+  .derivedGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

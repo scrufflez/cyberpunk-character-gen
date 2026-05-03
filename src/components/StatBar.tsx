@@ -1,26 +1,16 @@
-import { useEffect, useState } from 'react';
 import type { StatDefinition } from '../types';
 import styles from './StatBar.module.css';
 
 interface Props {
   stat: StatDefinition;
   value: number;
-  animationDelay?: number;
+  readonly?: boolean;
+  onIncrement?: () => void;
+  onDecrement?: () => void;
 }
 
-export default function StatBar({ stat, value, animationDelay = 0 }: Props) {
-  const [displayValue, setDisplayValue] = useState(0);
-
-  // Animate bar fill on mount / value change
-  useEffect(() => {
-    setDisplayValue(0);
-    const timeout = setTimeout(() => {
-      setDisplayValue(value);
-    }, animationDelay);
-    return () => clearTimeout(timeout);
-  }, [value, animationDelay]);
-
-  const tier = value >= 80 ? 'elite' : value >= 55 ? 'high' : value >= 35 ? 'mid' : 'low';
+export default function StatBar({ stat, value, readonly = true, onIncrement, onDecrement }: Props) {
+  const pct = (value / 8) * 100;
 
   return (
     <div className={styles.row}>
@@ -28,27 +18,50 @@ export default function StatBar({ stat, value, animationDelay = 0 }: Props) {
         <span className={styles.key} style={{ color: stat.color }}>
           {stat.label}
         </span>
-        <span className={styles.fullName}>{stat.fullName}</span>
+        <span className={styles.fullName} title={stat.description}>
+          {stat.fullName}
+        </span>
       </div>
 
       <div className={styles.track}>
         <div
           className={styles.fill}
           style={{
-            width: `${displayValue}%`,
+            width: `${pct}%`,
             background: `linear-gradient(90deg, ${stat.color}88 0%, ${stat.color} 100%)`,
             boxShadow: `0 0 8px ${stat.color}88, 0 0 16px ${stat.color}44`,
           }}
         />
-        {/* Tick marks */}
-        {[25, 50, 75].map((tick) => (
-          <div key={tick} className={styles.tick} style={{ left: `${tick}%` }} />
+        {[2, 4, 6].map((tick) => (
+          <div key={tick} className={styles.tick} style={{ left: `${(tick / 8) * 100}%` }} />
         ))}
       </div>
 
-      <span className={`${styles.value} ${styles[tier]}`} style={{ color: stat.color }}>
-        {displayValue.toString().padStart(2, '0')}
+      {!readonly && onDecrement && (
+        <button
+          className={`${styles.adjBtn} ${styles.decBtn}`}
+          onClick={onDecrement}
+          disabled={value <= 2}
+          aria-label={`Decrease ${stat.label}`}
+        >
+          −
+        </button>
+      )}
+
+      <span className={styles.value} style={{ color: stat.color, minWidth: readonly ? '18px' : '22px' }}>
+        {value}
       </span>
+
+      {!readonly && onIncrement && (
+        <button
+          className={`${styles.adjBtn} ${styles.incBtn}`}
+          onClick={onIncrement}
+          disabled={value >= 8}
+          aria-label={`Increase ${stat.label}`}
+        >
+          +
+        </button>
+      )}
     </div>
   );
 }

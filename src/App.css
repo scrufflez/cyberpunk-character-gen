@@ -118,12 +118,174 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
+  gap: 24px;
   padding: 32px 24px 48px;
   width: 100%;
   max-width: 900px;
   position: relative;
   z-index: 1;
+}
+
+/* ============================================================
+   Controls row
+   ============================================================ */
+.controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.roleSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roleLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.55rem;
+  color: rgba(0, 240, 255, 0.45);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.roleDropdown {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+  padding: 10px 32px 10px 16px;
+  background: rgba(10, 10, 20, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 4px;
+  color: #00f0ff;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300f0ff' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.roleDropdown:hover, .roleDropdown:focus {
+  border-color: rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+  outline: none;
+}
+
+.roleDropdown option {
+  background: #0a0a14;
+  color: #00f0ff;
+}
+
+/* ============================================================
+   Editor card (stat allocation before confirmation)
+   ============================================================ */
+.editorCard {
+  width: 100%;
+  background: rgba(10, 10, 20, 0.92);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 6px;
+  padding: 20px 24px;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.06);
+}
+
+.editorHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.editorTitle {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.6rem;
+  color: rgba(0, 240, 255, 0.45);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.pointsDisplay {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border: 1px solid rgba(57, 255, 20, 0.3);
+  border-radius: 4px;
+  background: rgba(57, 255, 20, 0.05);
+}
+
+.pointsLabel {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.15em;
+}
+
+.pointsValue {
+  font-family: 'Rajdhani', 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.pointsRemain {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+}
+
+.editorStats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.validationMsg {
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  padding: 6px 12px;
+  margin-bottom: 12px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.confirmBtn {
+  display: block;
+  width: 100%;
+  padding: 12px 24px;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  transition: all 0.2s;
+}
+
+.confirmBtnReady {
+  color: #0a0a0f;
+  background: #39ff14;
+  border-color: #39ff14;
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+  cursor: pointer;
+}
+
+.confirmBtnReady:hover {
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.7), 0 0 60px rgba(57, 255, 20, 0.2);
+  transform: translateY(-1px);
 }
 
 /* ============================================================
