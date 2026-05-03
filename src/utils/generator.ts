@@ -136,8 +136,8 @@ function generateRoleAbility(role: RoleClass): RoleAbility {
   };
 }
 
-export function generateCharacter(): Character {
-  const role = pick(roles);
+export function generateCharacter(roleOverride?: RoleClass): Character {
+  const role = roleOverride ?? pick(roles);
   const name = generateName();
   const handle = generateHandle();
   const affiliation = pick(affiliations);

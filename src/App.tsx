@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { Character, Stats } from './types';
+import type { Character, Stats, RoleClass } from './types';
 import { generateCharacter, calculateDerivedStats } from './utils/generator';
 import { roles, statDefinitions } from './data/classes';
 import CharacterCard from './components/CharacterCard';
@@ -35,16 +35,8 @@ export default function App() {
     setConfirmed(false);
 
     setTimeout(() => {
-      const gen = generateCharacter();
+      const ch = generateCharacter((selectedRole || undefined) as RoleClass | undefined);
 
-      // If a role is selected, re-roll with that role
-      let ch: Character;
-      if (selectedRole) {
-        // Regenerate with selected role by overwriting
-        ch = gen;
-      } else {
-        ch = gen;
-      }
 
       // Put stats into editing mode
       setEditingStats({ ...ch.stats });

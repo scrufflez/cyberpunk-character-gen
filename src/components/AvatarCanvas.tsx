@@ -19,8 +19,8 @@ export default function AvatarCanvas({ seed }: Props) {
     <div className={styles.wrapper}>
       <canvas
         ref={canvasRef}
-        width={280}
-        height={280}
+        width={160}
+        height={160}
         className={styles.canvas}
       />
     </div>
