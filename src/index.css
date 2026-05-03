@@ -1,0 +1,66 @@
+/* Global reset and cyberpunk base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: #0a0a0f;
+  color: #e0e0e0;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Base typography resets */
+h1, h2, h3, h4 {
+  font-weight: inherit;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0a0f;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.5);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(0, 240, 255, 0.3);
+  color: #fff;
+}

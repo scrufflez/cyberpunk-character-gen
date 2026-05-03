@@ -1,0 +1,30 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow:
+    0 0 12px rgba(0, 240, 255, 0.2),
+    0 0 40px rgba(0, 240, 255, 0.08),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.canvas {
+  display: block;
+}

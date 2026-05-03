@@ -1,0 +1,88 @@
+Build a complete, polished web app: a Cyberpunk Character Generator.
+
+TECH STACK:
+- Vite + React + TypeScript
+- No external dependencies beyond React (no Three.js, no game engines)
+- CSS modules or styled approach (inline or .module.css) — NO Tailwind
+- Deploy target: Vercel (static SPA)
+
+APP SPEC:
+
+1. **Landing/Generator Page** — the main and only page:
+   - A "Generate" button that creates a random cyberpunk character
+   - Each character has:
+     - **Name** (generated from syllable combos — e.g. "Zero-9", "Neon Pulse", "Vex Chrome", "Ash Stryker")
+     - **Handle** (@ something — e.g. @wire_rat, @ghost_in_the_wire)
+     - **Role/Class** (Hacker, Street Samurai, Netrunner, Fixer, Rigger, Media, Solo, Tech)
+     - **Backstory** (2-3 sentence generated flavor text — 10+ variants randomized)
+     - **Affiliation** (e.g. Arasaka, Militech, Trauma Team, The Mox, Tyger Claws, Street Kids, Nomads)
+
+2. **Stats Display** (6 primary stats, displayed as animated neon bars):
+   - STR (Strength)
+   - AGL (Agility)  
+   - INT (Intelligence)
+   - CYW (Cyberware)
+   - CHR (Charisma)
+   - TEC (Technical)
+   - Each rolled randomly 1-100, shown as a horizontal bar with a neon color gradient
+
+3. **Canvas-Generated Avatar** (pure <canvas> drawn on the fly):
+   - A stylized cyberpunk portrait — geometric/abstract style
+   - Randomized elements: face shape, neon eye color (glowing single color), cybernetic implants (lines, circuits drawn with arcs), hair (colored geometric shapes), background grid pattern
+   - Colors pulled from a cyberpunk palette (neon pink, cyan, electric blue, purple, lime green)
+   - The canvas should produce recognizable but stylized humanoid faces in cyberpunk aesthetic
+   - Size: 280x280 pixels
+
+4. **Visual Design (Cyberpunk Aesthetic)**:
+   - Dark background (#0a0a0f or similar deep dark)
+   - Neon accent colors: cyan (#00f0ff), magenta (#ff00aa), yellow (#ffd700), lime (#39ff14), purple (#b300ff)
+   - Glow effects (text-shadow, box-shadow with rgba colors)
+   - Japanese/kanji decorative text elements (pure CSS, use unicode chars like 電脳, 未来, 都市)
+   - Scanline overlay effect (CSS repeating gradient)
+   - Glitch text effect on hover (CSS keyframes)
+   - Rounded neon-bordered cards for character display
+   - Pixel-perfect spacing, no layout shifts
+
+5. **Polish**:
+   - Floating particles background (CSS animation with pseudo-elements or simple divs)
+   - Smooth transitions when generating new character (fade in)
+   - Responsive — works on mobile and desktop
+   - Favicon that matches the theme
+   - Clean, commented code
+   - Proper TypeScript types for all interfaces
+
+6. **Project Structure**:
+   ```
+   src/
+     App.tsx          — main app component
+     App.css          — global styles
+     types.ts         — TypeScript interfaces
+     utils/
+       generator.ts   — name, backstory, stat generation logic
+       avatar.ts      — canvas avatar drawing function
+     components/
+       CharacterCard.tsx / .css  — main display card
+       StatBar.tsx / .css        — individual stat bar
+       AvatarCanvas.tsx / .css   — canvas rendering wrapper
+       Particles.tsx / .css      — floating particle background
+     data/
+       names.ts       — syllable pools and name templates
+       backstories.ts — backstory templates
+       classes.ts     — role/class definitions
+   ```
+
+BUILD PROCESS:
+1. Initialize the Vite project with: npm create vite@latest . -- --template react-ts
+2. Install deps (just react + react-dom, everything already included)
+3. Write all source files with full implementation
+4. Verify it builds: npm run build (must succeed with no errors)
+5. Verify it starts: npm run dev (start it, curl localhost:5173, confirm it returns HTML)
+6. Print the final file tree
+
+IMPORTANT:
+- Every component must be fully implemented, not stubbed
+- The canvas avatar must draw actual geometric features (eyes, face, cyberware lines), not just abstract blobs
+- Stats must be truly random (not seeded) each time Generate is clicked
+- Polish matters — animations, glow effects, responsive layout
+- Use a single-page approach, no routing needed
+- The app should look impressive the moment it loads
