@@ -1,18 +1,12 @@
-import { prisma } from './lib/prisma'
-import type { VercelRequest, VercelResponse } from '@vercel/node'
+import { PrismaClient } from '@prisma/client'
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+const prisma = new PrismaClient()
+
+export default async function handler(req: any, res: any) {
   if (req.method === 'GET') {
     const characters = await prisma.character.findMany({
       orderBy: { createdAt: 'desc' },
-      select: {
-        id: true,
-        name: true,
-        role: true,
-        handle: true,
-        createdAt: true,
-        stats: true,
-      },
+      select: { id: true, name: true, role: true, handle: true, createdAt: true },
     })
     return res.json(characters)
   }
