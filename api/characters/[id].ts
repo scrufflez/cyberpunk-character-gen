@@ -1,8 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL
-})
+import { sql } from '@vercel/postgres'
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Content-Type', 'application/json')
@@ -11,22 +7,34 @@ export default async function handler(req: any, res: any) {
     const { id } = req.query
 
     if (req.method === 'GET') {
-      const character = await prisma.character.findUnique({ where: { id: String(id) } })
-      if (!character) return res.status(404).json({ error: 'Not found' })
-      return res.status(200).json(character)
+      const { rows } = await sql`SELECT * FROM "Character" WHERE id = ${id}`
+      if (!rows[0]) return res.status(404).json({ error: 'Not found' })
+      return res.status(200).json(rows[0])
     }
 
     if (req.method === 'PATCH') {
       const { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility } = req.body
-      const character = await prisma.character.update({
-        where: { id: String(id) },
-        data: { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility },
-      })
-      return res.status(200).json(character)
+      const { rows } = await sql`
+        UPDATE "Character"
+        SET
+          name = ${name},
+          handle = ${handle},
+          role = ${role},
+          affiliation = ${affiliation},
+          backstory = ${backstory},
+          stats = ${JSON.stringify(stats)},
+          "derivedStats" = ${JSON.stringify(derivedStats)},
+          "roleAbility" = ${JSON.stringify(roleAbility)},
+          "updatedAt" = NOW()
+        WHERE id = ${id}
+        RETURNING *
+      `
+      if (!rows[0]) return res.status(404).json({ error: 'Not found' })
+      return res.status(200).json(rows[0])
     }
 
     if (req.method === 'DELETE') {
-      await prisma.character.delete({ where: { id: String(id) } })
+      await sql`DELETE FROM "Character" WHERE id = ${id}`
       return res.status(200).json({ success: true })
     }
 

@@ -1,27 +1,29 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL
-})
+import { sql } from '@vercel/postgres'
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Content-Type', 'application/json')
 
   try {
     if (req.method === 'GET') {
-      const characters = await prisma.character.findMany({
-        orderBy: { createdAt: 'desc' },
-        select: { id: true, name: true, role: true, handle: true, createdAt: true },
-      })
-      return res.status(200).json(characters)
+      const { rows } = await sql`
+        SELECT id, name, role, handle, "createdAt"
+        FROM "Character"
+        ORDER BY "createdAt" DESC
+      `
+      return res.status(200).json(rows)
     }
 
     if (req.method === 'POST') {
       const { name, handle, role, affiliation, backstory, avatarSeed, stats, derivedStats, roleAbility } = req.body
-      const character = await prisma.character.create({
-        data: { name, handle, role, affiliation, backstory, avatarSeed, stats, derivedStats, roleAbility },
-      })
-      return res.status(200).json(character)
+      const { rows } = await sql`
+        INSERT INTO "Character" (name, handle, role, affiliation, backstory, "avatarSeed", stats, "derivedStats", "roleAbility")
+        VALUES (
+          ${name}, ${handle}, ${role}, ${affiliation}, ${backstory}, ${avatarSeed},
+          ${JSON.stringify(stats)}, ${JSON.stringify(derivedStats)}, ${JSON.stringify(roleAbility)}
+        )
+        RETURNING *
+      `
+      return res.status(200).json(rows[0])
     }
 
     res.status(405).json({ error: 'Method not allowed' })
