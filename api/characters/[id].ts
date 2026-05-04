@@ -1,29 +1,38 @@
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL
+})
 
 export default async function handler(req: any, res: any) {
-  const { id } = req.query
+  res.setHeader('Content-Type', 'application/json')
 
-  if (req.method === 'GET') {
-    const character = await prisma.character.findUnique({ where: { id: String(id) } })
-    if (!character) return res.status(404).json({ error: 'Not found' })
-    return res.json(character)
+  try {
+    const { id } = req.query
+
+    if (req.method === 'GET') {
+      const character = await prisma.character.findUnique({ where: { id: String(id) } })
+      if (!character) return res.status(404).json({ error: 'Not found' })
+      return res.status(200).json(character)
+    }
+
+    if (req.method === 'PATCH') {
+      const { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility } = req.body
+      const character = await prisma.character.update({
+        where: { id: String(id) },
+        data: { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility },
+      })
+      return res.status(200).json(character)
+    }
+
+    if (req.method === 'DELETE') {
+      await prisma.character.delete({ where: { id: String(id) } })
+      return res.status(200).json({ success: true })
+    }
+
+    res.status(405).json({ error: 'Method not allowed' })
+  } catch (e: any) {
+    console.error('API error:', e)
+    res.status(500).json({ error: e.message || 'Internal error' })
   }
-
-  if (req.method === 'PATCH') {
-    const { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility } = req.body
-    const character = await prisma.character.update({
-      where: { id: String(id) },
-      data: { name, handle, role, affiliation, backstory, stats, derivedStats, roleAbility },
-    })
-    return res.json(character)
-  }
-
-  if (req.method === 'DELETE') {
-    await prisma.character.delete({ where: { id: String(id) } })
-    return res.json({ success: true })
-  }
-
-  res.status(405).json({ error: 'Method not allowed' })
 }
