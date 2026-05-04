@@ -1,21 +1,21 @@
 .row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 0;
+  gap: 6px;
+  padding: 2px 0;
 }
 
 .label {
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  min-width: 130px;
+  gap: 4px;
+  min-width: 70px;
   flex-shrink: 0;
 }
 
 .key {
   font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-shadow: 0 0 8px currentColor;
@@ -23,25 +23,19 @@
 }
 
 .fullName {
-  font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 0.55rem;
-  color: rgba(255, 255, 255, 0.35);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none;
 }
 
 .track {
   position: relative;
   flex: 1;
-  height: 8px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 2px;
   overflow: visible;
-  min-width: 80px;
+  min-width: 60px;
+  max-width: 120px;
 }
 
 .fill {
@@ -52,32 +46,27 @@
 }
 
 .tick {
-  position: absolute;
-  top: -3px;
-  width: 1px;
-  height: 14px;
-  background: rgba(255, 255, 255, 0.12);
-  pointer-events: none;
+  display: none;
 }
 
 .value {
   font-family: 'Share Tech Mono', 'Courier New', monospace;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: center;
   text-shadow: 0 0 8px currentColor;
-  min-width: 18px;
+  min-width: 16px;
 }
 
 .adjBtn {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: 3px;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
   color: rgba(255, 255, 255, 0.7);
   font-family: 'Share Tech Mono', monospace;
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;

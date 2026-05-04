@@ -28,20 +28,25 @@ export default function App() {
   const [savedChars, setSavedChars] = useState<SavedEntry[]>([]);
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch saved characters on mount
   useEffect(() => {
     fetchSavedCharacters();
   }, []);
 
   async function fetchSavedCharacters() {
     try {
+      setError(null);
       const res = await fetch('/api/characters');
-      if (res.ok) {
-        const data = await res.json();
-        setSavedChars(data);
+      if (!res.ok) {
+        setError(`API error: ${res.status} ${res.statusText}`);
+        return;
       }
-    } catch {}
+      const data = await res.json();
+      setSavedChars(data);
+    } catch (e: any) {
+      setError(`Failed to load: ${e.message}`);
+    }
   }
 
   const pointsUsed = useMemo(() => {
@@ -58,6 +63,7 @@ export default function App() {
     setConfirmed(false);
     setViewingId(null);
     setCharacter(null);
+    setError(null);
 
     setTimeout(() => {
       const ch = generateCharacter((selectedRole || undefined) as RoleClass | undefined);
@@ -65,7 +71,6 @@ export default function App() {
       setCharacter(ch);
       setIsNew(true);
       setIsGenerating(false);
-      setConfirmed(false);
     }, 120);
   }, [selectedRole]);
 
@@ -80,8 +85,8 @@ export default function App() {
     setCharacter(finalChar);
     setConfirmed(true);
     setEditingStats(null);
+    setError(null);
 
-    // Auto-save to database
     try {
       const res = await fetch('/api/characters', {
         method: 'POST',
@@ -98,20 +103,29 @@ export default function App() {
           roleAbility: finalChar.roleAbility,
         }),
       });
-      if (res.ok) {
-        const saved = await res.json();
-        setViewingId(saved.id);
-        await fetchSavedCharacters();
+      if (!res.ok) {
+        const text = await res.text();
+        setError(`Save failed: ${res.status} — ${text}`);
+        return;
       }
-    } catch {}
+      const saved = await res.json();
+      setViewingId(saved.id);
+      await fetchSavedCharacters();
+    } catch (e: any) {
+      setError(`Save error: ${e.message}`);
+    }
   }, [character, editingStats, remaining]);
 
   const handleLoadCharacter = useCallback(async (id: string) => {
     try {
+      setError(null);
       const res = await fetch(`/api/characters/${id}`);
-      if (!res.ok) return;
+      if (!res.ok) {
+        setError(`Load failed: ${res.status}`);
+        return;
+      }
       const data = await res.json();
-      const ch: Character = {
+      setCharacter({
         id: data.id,
         name: data.name,
         handle: data.handle,
@@ -122,18 +136,20 @@ export default function App() {
         derivedStats: data.derivedStats,
         roleAbility: data.roleAbility,
         avatarSeed: data.avatarSeed,
-      };
-      setCharacter(ch);
+      });
       setConfirmed(true);
       setViewingId(data.id);
       setEditingStats(null);
       setIsNew(false);
-    } catch {}
+    } catch (e: any) {
+      setError(`Load error: ${e.message}`);
+    }
   }, []);
 
   const handleDeleteCharacter = useCallback(async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
+      setError(null);
       await fetch(`/api/characters/${id}`, { method: 'DELETE' });
       if (viewingId === id) {
         setCharacter(null);
@@ -141,14 +157,15 @@ export default function App() {
         setViewingId(null);
       }
       await fetchSavedCharacters();
-    } catch {}
+    } catch (e: any) {
+      setError(`Delete error: ${e.message}`);
+    }
   }, [viewingId]);
 
   const adjustStat = useCallback((key: keyof Stats, delta: number) => {
     setEditingStats((prev) => {
       if (!prev) return prev;
-      const current = prev[key];
-      const newVal = current + delta;
+      const newVal = prev[key] + delta;
       if (newVal < 2 || newVal > 8) return prev;
       if (delta > 0 && remaining - delta < 0) return prev;
       return { ...prev, [key]: newVal };
@@ -165,21 +182,20 @@ export default function App() {
     <div className="app">
       <Particles />
       <div className="scanline-overlay" aria-hidden="true" />
-
       <header className="header">
         <div className="header-decor" aria-hidden="true">
-          <span className="kanji-decor">電脳</span>
-          <span className="kanji-decor">未来</span>
-          <span className="kanji-decor">都市</span>
+          <span className="kanji-decor">電</span>
+          <span className="kanji-decor">脳</span>
+          <span className="kanji-decor">都</span>
         </div>
         <h1 className="title">
-          <span className="title-cyber">CYBER</span>
-          <span className="title-punk">PUNK</span>
-          <br />
-          <span className="title-sub">CHARACTER GENERATOR</span>
+          <span className="title-cyber">CYBER</span><span className="title-punk">PUNK</span>
+          <br /><span className="title-sub">CHARACTER GENERATOR</span>
         </h1>
         <p className="tagline">// ROLL YOUR IDENTITY. CLAIM YOUR STREET NAME.</p>
       </header>
+
+      {error && <div className="errorBar">{error}</div>}
 
       <div className="appBody">
         <main className="main">
@@ -191,10 +207,9 @@ export default function App() {
                 {roles.map((r) => <option key={r} value={r}>{r}</option>)}
               </select>
             </div>
-
             <button className={`generate-btn${isGenerating ? ' generating' : ''}`} onClick={handleGenerate} disabled={isGenerating}>
               <span className="btn-icon">◈</span>
-              <span className="btn-text">{isGenerating ? 'GENERATING...' : character && !confirmed ? 'REROLL' : character ? 'REROLL' : 'GENERATE'}</span>
+              <span className="btn-text">{isGenerating ? 'GENERATING...' : 'REROLL'}</span>
               <span className="btn-icon">◈</span>
             </button>
           </div>
@@ -202,16 +217,18 @@ export default function App() {
           {editingStats && !confirmed && (
             <div className="editorCard">
               <div className="editorHeader">
-                <span className="editorTitle">{character?.role ? `// ${character.role.toUpperCase()} ATTRIBUTES` : '// ATTRIBUTE ALLOCATION'}</span>
+                <span className="editorTitle">// {character?.role?.toUpperCase() || 'ATTRIBUTES'}</span>
                 <div className="pointsDisplay" style={{ borderColor: remainingColor + '44' }}>
-                  <span className="pointsLabel">POINTS</span>
-                  <span className="pointsValue" style={{ color: remainingColor }}>{pointsUsed}/{TOTAL_POOL}</span>
-                  <span className="pointsRemain" style={{ color: remainingColor }}>({remaining >= 0 ? `${remaining} left` : `${Math.abs(remaining)} over`})</span>
+                  <span className="pointsLabel">PTS</span>
+                  <span className="pointsValue" style={{ color: remainingColor }}>{pointsUsed}/62</span>
+                  <span className="pointsRemain" style={{ color: remainingColor }}>
+                    ({remaining >= 0 ? `${remaining} left` : `${Math.abs(remaining)} over`})
+                  </span>
                 </div>
               </div>
               {remaining !== 0 && (
                 <div className="validationMsg" style={{ color: remaining < 0 ? '#ff4444' : '#ffd700' }}>
-                  {remaining < 0 ? 'Total stats exceed 62 — reduce some attributes' : `Distribute ${remaining} more points (total must be exactly 62)`}
+                  {remaining < 0 ? 'Exceeds 62 — reduce stats' : `${remaining} more points needed (exactly 62)`}
                 </div>
               )}
               <div className="editorStats">
@@ -222,7 +239,7 @@ export default function App() {
                 ))}
               </div>
               <button className={`confirmBtn ${isStatValid ? 'confirmBtnReady' : ''}`} onClick={handleConfirm} disabled={!isStatValid}>
-                {isStatValid ? 'CONFIRM CHARACTER' : 'ALLOCATE ALL POINTS'}
+                {isStatValid ? 'CONFIRM & SAVE' : 'ALLOCATE ALL POINTS'}
               </button>
             </div>
           )}
@@ -230,31 +247,29 @@ export default function App() {
           {character && confirmed && (
             <div className="card-wrapper">
               <CharacterCard character={character} isNew={isNew} />
-              {viewingId && (
-                <button className="deleteBtn" onClick={(e) => handleDeleteCharacter(viewingId, e as any)}>DELETE</button>
-              )}
+              {viewingId && <button className="deleteBtn" onClick={(e) => handleDeleteCharacter(viewingId, e as any)}>DELETE CHARACTER</button>}
             </div>
           )}
 
-          {!character && (
+          {!character && !editingStats && (
             <div className="empty-state">
               <div className="empty-prompt">
                 <span className="empty-cursor">_</span>
-                <span className="empty-text">AWAITING IDENTITY GENERATION</span>
+                <span className="empty-text">AWAITING IDENTITY</span>
               </div>
-              <p className="empty-sub">Press GENERATE to create your cyberpunk persona</p>
+              <p className="empty-sub">Press REROLL to create a cyberpunk persona</p>
             </div>
           )}
         </main>
 
         <aside className={`sidebar ${sidebarOpen ? 'open' : 'closed'}`}>
+          <button className="toggleSidebar" onClick={() => setSidebarOpen(!sidebarOpen)}>
+            {sidebarOpen ? '▶' : '◀'}
+          </button>
           <div className="sidebarHeader">
             <span className="sidebarTitle">SAVED</span>
             <span className="sidebarCount">{savedChars.length}</span>
           </div>
-          <button className="toggleSidebar" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            {sidebarOpen ? '▶' : '◀'}
-          </button>
           <div className="savedList">
             {savedChars.map((entry) => (
               <div key={entry.id}
@@ -265,9 +280,7 @@ export default function App() {
                 <button className="savedDelete" onClick={(e) => handleDeleteCharacter(entry.id, e as any)}>✕</button>
               </div>
             ))}
-            {savedChars.length === 0 && (
-              <div className="savedEmpty">No saved characters</div>
-            )}
+            {savedChars.length === 0 && <div className="savedEmpty">No saved characters</div>}
           </div>
         </aside>
       </div>
@@ -275,7 +288,7 @@ export default function App() {
       <footer className="footer">
         <span>NIGHT CITY // {new Date().getFullYear()}</span>
         <span className="footer-kanji">電脳都市</span>
-        <span>NETRUNNER V2.0</span>
+        <span>v2.0</span>
       </footer>
     </div>
   );
