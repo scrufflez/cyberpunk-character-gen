@@ -461,3 +461,222 @@
     padding: 10px 16px;
   }
 }
+
+/* ============================================================
+   Body layout (main + sidebar)
+   ============================================================ */
+.appBody {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   Saved characters sidebar
+   ============================================================ */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: rgba(10, 10, 20, 0.9);
+  border-left: 1px solid rgba(0, 240, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 8px;
+  transition: width 0.2s, padding 0.2s;
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar.closed {
+  width: 0;
+  padding: 16px 0;
+  border-left: none;
+}
+
+.toggleSidebar {
+  position: absolute;
+  top: 16px;
+  left: -28px;
+  width: 28px;
+  height: 28px;
+  background: rgba(10, 10, 20, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  color: #00f0ff;
+  cursor: pointer;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 2;
+}
+
+.toggleSidebar:hover {
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+}
+
+.sidebarTitle {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(0, 240, 255, 0.5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.sidebarCount {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(0, 240, 255, 0.35);
+  padding: 2px 8px;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 3px;
+}
+
+.savedList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.savedItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.savedItem:hover {
+  background: rgba(0, 240, 255, 0.06);
+  border-color: rgba(0, 240, 255, 0.15);
+}
+
+.savedItem.active {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.savedName {
+  font-family: 'Rajdhani', 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.savedRole {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.5rem;
+  color: #b300ff;
+  text-shadow: 0 0 6px rgba(179, 0, 255, 0.5);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.savedDelete {
+  background: none;
+  border: none;
+  color: rgba(255, 68, 68, 0.4);
+  cursor: pointer;
+  font-size: 0.65rem;
+  padding: 2px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.savedItem:hover .savedDelete {
+  opacity: 1;
+}
+
+.savedDelete:hover {
+  color: #ff4444;
+}
+
+.savedEmpty {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  padding: 20px 0;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   Delete button on active character
+   ============================================================ */
+.deleteBtn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(255, 68, 68, 0.08);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: 3px;
+  color: #ff4444;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.deleteBtn:hover {
+  background: rgba(255, 68, 68, 0.2);
+  border-color: #ff4444;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 900px) {
+  .appBody {
+    flex-direction: column-reverse;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 200px;
+    border-left: none;
+    border-top: 1px solid rgba(0, 240, 255, 0.15);
+  }
+
+  .sidebar.closed {
+    width: 100%;
+    max-height: 0;
+    padding: 0;
+  }
+
+  .toggleSidebar {
+    left: auto;
+    right: 12px;
+    top: -28px;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+  }
+}
