@@ -1,28 +1,27 @@
-import { sql } from '@vercel/postgres'
+import { Pool } from 'pg'
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
 
 export default async function handler(req: any, res: any) {
   res.setHeader('Content-Type', 'application/json')
 
   try {
     if (req.method === 'GET') {
-      const { rows } = await sql`
-        SELECT id, name, role, handle, "createdAt"
-        FROM "Character"
-        ORDER BY "createdAt" DESC
-      `
+      const { rows } = await pool.query(
+        'SELECT id, name, role, handle, "createdAt" FROM "Character" ORDER BY "createdAt" DESC'
+      )
       return res.status(200).json(rows)
     }
 
     if (req.method === 'POST') {
       const { name, handle, role, affiliation, backstory, avatarSeed, stats, derivedStats, roleAbility } = req.body
-      const { rows } = await sql`
-        INSERT INTO "Character" (name, handle, role, affiliation, backstory, "avatarSeed", stats, "derivedStats", "roleAbility")
-        VALUES (
-          ${name}, ${handle}, ${role}, ${affiliation}, ${backstory}, ${avatarSeed},
-          ${JSON.stringify(stats)}, ${JSON.stringify(derivedStats)}, ${JSON.stringify(roleAbility)}
-        )
-        RETURNING *
-      `
+      const { rows } = await pool.query(
+        `INSERT INTO "Character" (name, handle, role, affiliation, backstory, "avatarSeed", stats, "derivedStats", "roleAbility")
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         RETURNING *`,
+        [name, handle, role, affiliation, backstory, avatarSeed,
+          JSON.stringify(stats), JSON.stringify(derivedStats), JSON.stringify(roleAbility)]
+      )
       return res.status(200).json(rows[0])
     }
 
