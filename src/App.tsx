@@ -82,9 +82,6 @@ export default function App() {
       stats: editingStats,
       derivedStats: derived,
     };
-    setCharacter(finalChar);
-    setConfirmed(true);
-    setEditingStats(null);
     setError(null);
 
     try {
@@ -109,6 +106,9 @@ export default function App() {
         return;
       }
       const saved = await res.json();
+      setCharacter(finalChar);
+      setConfirmed(true);
+      setEditingStats(null);
       setViewingId(saved.id);
       await fetchSavedCharacters();
     } catch (e: any) {
@@ -247,7 +247,6 @@ export default function App() {
           {character && confirmed && (
             <div className="card-wrapper">
               <CharacterCard character={character} isNew={isNew} />
-              {viewingId && <button className="deleteBtn" onClick={(e) => handleDeleteCharacter(viewingId, e as any)}>DELETE CHARACTER</button>}
             </div>
           )}
 
